@@ -16,6 +16,7 @@ public class Message {
     private String channel;
     private String sender;
     private String content;
+    private String photo;
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
     @Temporal(TemporalType.TIMESTAMP)
