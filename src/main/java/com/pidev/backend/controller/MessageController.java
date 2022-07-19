@@ -6,6 +6,7 @@ import com.pidev.backend.entities.User;
 import com.pidev.backend.repos.MessageRepository;
 import com.pidev.backend.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -19,7 +20,7 @@ public class MessageController {
     UserRepository userRepository;
     @GetMapping(value = "/messages/{channelId}")
     public List<Message> findMessages( @PathVariable("channelId") String channelId) {
-        return messageRepository.findAllByChannel(channelId);
+        return messageRepository.findAll(Sort.by(Sort.Direction.ASC,"timestamp"));
     }
     @PostMapping(value = "/messages")
     public void sendReadReceipt(@RequestBody ReadMessageRequest request) {
