@@ -125,6 +125,10 @@ public class UserService {
         {
             user.setPhoto(oldUser.getPhoto());
         }
+        if (user.getProfession()==null ||user.getProfession()=="")
+        {
+            user.setProfession(oldUser.getProfession());
+        }
         return userDao.save(user);
 
 

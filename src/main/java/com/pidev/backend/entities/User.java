@@ -23,6 +23,8 @@ public class User {
 
     private String photo;
 
+    private String profession;
+
     private boolean disabled = true;
 
     private boolean isLogged;

@@ -3,15 +3,20 @@ package com.pidev.backend.controller;
 import com.pidev.backend.entities.User;
 import com.pidev.backend.repos.UserRepository;
 import com.pidev.backend.service.UserService;
+import com.pidev.backend.uploadutils.FileUploadResponse;
+import com.pidev.backend.uploadutils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -96,5 +101,22 @@ public class UserController {
     @GetMapping("/changePassword/{username}/{oldPassword}/{newPassword}")
     public boolean changePassword( @PathVariable String username,@PathVariable String oldPassword,@PathVariable String newPassword){
         return userService.changePassword(username,oldPassword,newPassword);
+    }
+    @PostMapping(path = "/user/update/photo/{username}")
+    public ResponseEntity<FileUploadResponse>uploadFile(@PathVariable String username, @RequestParam("file") MultipartFile multipartFile ) throws IOException
+
+    {
+        User u = userService.getUser(username);
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        long size = multipartFile.getSize();
+        String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+        u.setPhoto(filecode+"-"+fileName);
+        userService.updateUser(u);
+        FileUploadResponse response = new FileUploadResponse();
+        response.setFileName(fileName);
+        response.setSize(size);
+        response.setDownloadUri("/downloadFile/" + filecode);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
     }
 }
